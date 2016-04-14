@@ -1,1 +1,2 @@
-# PAA-WarmUp
+# PAA
+Projeto e Análise de Algoritmos
