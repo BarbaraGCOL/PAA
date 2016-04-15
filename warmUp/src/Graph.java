@@ -4,7 +4,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Scanner;
  */
 public class Graph {
 
-	private List<Integer>[] accessMatrix, adjacencyMatrix;
+	private ArrayList<Integer>[] accessMatrix, adjacencyMatrix;
 	private int vertexCount, accessCount, edgesCount;
 
 	/**
@@ -29,8 +28,36 @@ public class Graph {
 		this.vertexCount = vertexCount;
 		adjacencyMatrix = new ArrayList[vertexCount];
 		accessMatrix = new ArrayList[vertexCount]; 
+		initializeAdjacencyMatrix();
 	}
 
+	@SuppressWarnings("unchecked")
+	private void initializeMatrix(int sizeLine, int sizeColumn, ArrayList<Integer>[] matrix){
+		ArrayList<Integer> list = new ArrayList<Integer>(); 
+
+		// Initialize line
+		for(int i = 0; i < sizeLine; i++){
+			list.add(0);
+		}
+		
+		// Initialize Matrix
+		for(int i = 0; i < vertexCount; i++){
+			matrix[i] = ((ArrayList<Integer>) list.clone());
+		}
+	}
+
+	private void initializeAdjacencyMatrix(){
+		
+		initializeMatrix(vertexCount, vertexCount, adjacencyMatrix);
+	
+	}
+	
+	private void initializeAccesMatrix(){
+		
+		initializeMatrix(accessCount, vertexCount, accessMatrix);
+		
+	}
+	
 	/**
 	 * Add a edge on the AdjacencyMatrix
 	 * @param i - vertex 1
@@ -39,74 +66,25 @@ public class Graph {
 	public void addEdge(int i, int j) {
 		
 		if (i > 0 && i <= vertexCount) {
-			List<Integer> adjacencies = new ArrayList<Integer>();
-			
-			// If vertex still doesn't have any edge connected to it 
-			if(adjacencyMatrix[i - 1] == null){
-				
-				adjacencies = new ArrayList<Integer>();
-
-				// Initialize adjacencies
-				for(int a = 0; a < vertexCount; a++){
-					adjacencies.add(0);
-				}
-			}
-			else{
-				adjacencies = adjacencyMatrix[i - 1];
-			}
-
 			// Set Adjacency (add edge on the matrix)
-			adjacencies.set(j - 1, 1);
-			adjacencyMatrix[i - 1] = adjacencies;
-
-			/**
-			 * Mirroring
-			 */
+			adjacencyMatrix[i - 1].set(j - 1, 1);
 			
-			// If vertex still doesn't have any edge connected to it 
-			if(adjacencyMatrix[j - 1] == null){
-				
-				adjacencies = new ArrayList<Integer>();
-
-				// Initialize adjacencies
-				for(int a = 0; a < vertexCount; a++){
-					adjacencies.add(0);
-				}
-			}
-			else{
-				adjacencies = adjacencyMatrix[j - 1];
-			}
-
-			// Set Adjacency (add edge on the matrix)
-			adjacencies.set(i - 1, 1);
-			adjacencyMatrix[j - 1] = adjacencies;
-
-			/**
-			 * End mirroring
-			 */
+			//Mirroring
+			adjacencyMatrix[j - 1].set(i - 1, 1);
 		}
 	}
 
 	/**
 	 * Add access points of the vertex on the matrix 
 	 * @param i - vertex
-	 * @param focos - vector of access points
+	 * @param acessPoints - vector of access points
 	 */
-	public void addAccess(int i, int[] focos) {
+	public void addAccess(int i, int[] acessPoints) {
 		if (i >= 0 && i < vertexCount) {
-			List<Integer> focosVertex = new ArrayList<Integer>();
-
-			//Initialize
-			for(int j = 0; j < accessCount; j++){
-				focosVertex.add(0);
-			}
-
 			// Add all access points of the vertex
-			for(int j = 0; j < focos.length; j++){
-				focosVertex.set(focos[j] - 1, 1);
+			for(int j = 0; j < acessPoints.length; j++){
+				accessMatrix[i].set(acessPoints[j] - 1, 1);
 			}
-
-			accessMatrix[i] = focosVertex;
 		}
 	}
 
@@ -161,7 +139,7 @@ public class Graph {
 		String[]valores;
 		boolean edgesFineshed = false;
 		int v1, v2, numVertices;
-		int[]access = null;
+		int[]accessPoints = null;
 		Graph graph = null;
 
 		try { 
@@ -184,6 +162,7 @@ public class Graph {
 					else{
 						// First line of access points -access points size (r value)
 						graph.accessCount = Integer.parseInt(valores[0]);
+						graph.initializeAccesMatrix();
 					}
 				}
 				else{
@@ -196,11 +175,11 @@ public class Graph {
 					}
 					// If is reading Acess Points
 					else{
-						access = new int[valores.length];
+						accessPoints = new int[valores.length];
 						for(int i = 0; i < valores.length; i++){
-							access[i] = Integer.parseInt(valores[i]);
+							accessPoints[i] = Integer.parseInt(valores[i]);
 						}
-						graph.addAccess(indice, access);
+						graph.addAccess(indice, accessPoints);
 					}
 				}
 
@@ -250,6 +229,10 @@ public class Graph {
 
 	public static void main(String[] args) {
 
+//		args = new String[2];
+//		args[0] = "in5";
+//		args[1] = "out5";
+		
 		if(args.length == 2){
 			
 			String dir = System.getProperty("user.dir");
