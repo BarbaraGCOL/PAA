@@ -187,7 +187,7 @@ public class Graph {
 				indice ++;
 
 				// If all the edges were read (it means that will start reading the access points)
-				if(indice > graph.edgesCount - 1){
+				if(!edgesFineshed && indice > graph.edgesCount - 1){
 					indice = -1;
 					edgesFineshed = true;
 				}
@@ -229,10 +229,6 @@ public class Graph {
 
 	public static void main(String[] args) {
 
-//		args = new String[2];
-//		args[0] = "in5";
-//		args[1] = "out5";
-		
 		if(args.length == 2){
 			
 			String dir = System.getProperty("user.dir");
