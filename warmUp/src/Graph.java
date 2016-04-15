@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Class to perform operations on a undirected and conected Graph (from a input file)
+ * Class to perform operations on a undirected and connected Graph (from a input file)
  * @author barbara.lopes
  *
  */
