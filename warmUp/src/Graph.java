@@ -3,7 +3,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -13,7 +12,7 @@ import java.util.Scanner;
  */
 public class Graph {
 
-	private ArrayList<Integer>[] accessMatrix, adjacencyMatrix;
+	private int[][] accessMatrix, adjacencyMatrix;
 	private int vertexCount, accessCount, edgesCount;
 
 	/**
@@ -23,41 +22,11 @@ public class Graph {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	public Graph(int vertexCount) {
 		this.vertexCount = vertexCount;
-		adjacencyMatrix = new ArrayList[vertexCount];
-		accessMatrix = new ArrayList[vertexCount]; 
-		initializeAdjacencyMatrix();
+		adjacencyMatrix = new int[vertexCount][vertexCount];
 	}
 
-	@SuppressWarnings("unchecked")
-	private void initializeMatrix(int sizeLine, int sizeColumn, ArrayList<Integer>[] matrix){
-		ArrayList<Integer> list = new ArrayList<Integer>(); 
-
-		// Initialize line
-		for(int i = 0; i < sizeLine; i++){
-			list.add(0);
-		}
-		
-		// Initialize Matrix
-		for(int i = 0; i < vertexCount; i++){
-			matrix[i] = ((ArrayList<Integer>) list.clone());
-		}
-	}
-
-	private void initializeAdjacencyMatrix(){
-		
-		initializeMatrix(vertexCount, vertexCount, adjacencyMatrix);
-	
-	}
-	
-	private void initializeAccesMatrix(){
-		
-		initializeMatrix(accessCount, vertexCount, accessMatrix);
-		
-	}
-	
 	/**
 	 * Add a edge on the AdjacencyMatrix
 	 * @param i - vertex 1
@@ -65,12 +34,12 @@ public class Graph {
 	 */
 	public void addEdge(int i, int j) {
 		
-		if (i > 0 && i <= vertexCount) {
-			// Set Adjacency (add edge on the matrix)
-			adjacencyMatrix[i - 1].set(j - 1, 1);
+		if (i > 0 && i <= vertexCount && j > 0 && j <= vertexCount) {
+			// Add Adjacency (add edge on the matrix)
+			adjacencyMatrix[i-1][j-1] = 1;
 			
 			//Mirroring
-			adjacencyMatrix[j - 1].set(i - 1, 1);
+			adjacencyMatrix[j-1][i-1] = 1;
 		}
 	}
 
@@ -83,7 +52,7 @@ public class Graph {
 		if (i >= 0 && i < vertexCount) {
 			// Add all access points of the vertex
 			for(int j = 0; j < acessPoints.length; j++){
-				accessMatrix[i].set(acessPoints[j] - 1, 1);
+				accessMatrix[i][acessPoints[j] - 1] = 1;
 			}
 		}
 	}
@@ -162,7 +131,7 @@ public class Graph {
 					else{
 						// First line of access points -access points size (r value)
 						graph.accessCount = Integer.parseInt(valores[0]);
-						graph.initializeAccesMatrix();
+						graph.accessMatrix = new int[graph.vertexCount][graph.accessCount];
 					}
 				}
 				else{
@@ -218,7 +187,7 @@ public class Graph {
 			gravarArq.println(stringAdjMatriz[i]); 
 		} 
 
-		// Save accesMatrix
+		// Save accessMatrix
 		for (int i=0; i<stringAccessMatriz.length; i++) { 
 			gravarArq.println(stringAccessMatriz[i]); 
 		}
@@ -237,10 +206,10 @@ public class Graph {
 	
 			String pathIn = dir+"\\"+args[0];
 	
-			Graph g = new Graph(); 
+			Graph graph = new Graph(); 
 			
 			try {
-				g = readGraphIn(pathIn);
+				graph = readGraphIn(pathIn);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -248,7 +217,7 @@ public class Graph {
 			String pathOut = dir+"\\"+args[1];
 			
 			try {
-				saveGraphOut(pathOut, g);
+				saveGraphOut(pathOut, graph);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
